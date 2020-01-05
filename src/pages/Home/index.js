@@ -4,7 +4,5 @@ import { Text } from 'react-native';
 // import { Container } from './styles';
 
 export default function Home() {
-  return (
-    <Text>Hi</Text>
-  );
+  return <Text>Hi</Text>;
 }

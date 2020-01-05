@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 
-import Home from './Home';
+import Home from './pages/Home';
 
 export default function App() {
   return (
