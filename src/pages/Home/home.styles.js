@@ -1,4 +1,13 @@
-// https://coolors.co/app/ffff82-f5f7dc-b5d99c-ed6a5a-fcf7f8
+// https://coolors.co/ffff82-f5f7dc-b5d99c-ed6a5a-202c39
 import styled from 'styled-components/native';
 
-export const Container = styled.View``;
+export const HomeContainer = styled.View`
+  flex: 1;
+  background-color: #202c39;
+`;
+
+export const CarouselContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
