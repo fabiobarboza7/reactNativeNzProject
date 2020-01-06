@@ -18,9 +18,7 @@ const sliderWidth = Dimensions.get('window').width;
 const itemWidth = slideWidth + horizontalMargin * 2;
 
 const renderItem = ({ item }) => {
-  const { id, title, teaser, salary } = item;
-
-  return <JobCard id={id} title={title} teaser={teaser} salary={salary} />;
+  return <JobCard item={item} />;
 };
 
 export default function Home() {
@@ -29,6 +27,7 @@ export default function Home() {
   useEffect(() => {
     async function loadWeekJobs() {
       const { data } = await getWeekJobs();
+      console.log(data);
       setWeekJobs(data);
     }
     loadWeekJobs();
@@ -53,7 +52,7 @@ export default function Home() {
 }
 
 renderItem.propTypes = {
-  item: PropTypes.isRequired,
+  item: PropTypes.shape({}).isRequired,
 };
 
 Home.navigationOptions = {
