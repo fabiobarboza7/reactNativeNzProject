@@ -9,6 +9,7 @@ import {
   WeekJobTitle,
   WeekJobDescription,
   WeekjobSalary,
+  WeekjobApply,
 } from './job-card.styles';
 
 export default function JobCard({ id, title, teaser, salary }) {
@@ -27,13 +28,15 @@ export default function JobCard({ id, title, teaser, salary }) {
     <WeekJobCard onPress={() => handleOpenLink(id)} style={styles.slide}>
       <>
         <WeekJobBody>
-          <WeekJobTitle style={styles.title}>{title}</WeekJobTitle>
+          <WeekJobTitle>{title}</WeekJobTitle>
           <WeekJobDescription>{teaser}</WeekJobDescription>
         </WeekJobBody>
         {salary.length ? (
-          <WeekjobSalary>Salário: {salary}</WeekjobSalary>
+          <WeekjobSalary>
+            Salário: {salary} - <WeekjobApply>Ver mais</WeekjobApply>
+          </WeekjobSalary>
         ) : (
-          <WeekjobSalary>Salário não informado</WeekjobSalary>
+          <WeekjobApply>Ver mais</WeekjobApply>
         )}
       </>
     </WeekJobCard>

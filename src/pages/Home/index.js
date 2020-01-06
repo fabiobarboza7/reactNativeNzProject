@@ -5,7 +5,12 @@ import PropTypes from 'prop-types';
 import { getWeekJobs } from '../../services/seek.service';
 import JobCard from '../../components/JobCard';
 
-import { HomeContainer, CarouselContainer } from './home.styles';
+import {
+  HomeContainer,
+  CarouselContainer,
+  HomeJobsTitle,
+  BoxDivisor,
+} from './home.styles';
 
 const horizontalMargin = 20;
 const slideWidth = 280;
@@ -31,7 +36,9 @@ export default function Home() {
 
   return (
     <HomeContainer>
+      <BoxDivisor />
       <CarouselContainer>
+        <HomeJobsTitle>JOBS DA SEMANA</HomeJobsTitle>
         <Carousel
           layout="default"
           data={weekJobs}
@@ -40,6 +47,7 @@ export default function Home() {
           itemWidth={itemWidth}
         />
       </CarouselContainer>
+      <BoxDivisor />
     </HomeContainer>
   );
 }
