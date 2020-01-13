@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Linking, Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import icon from '../../assets/Images/logo-seek.png';
 import styles from '../../styles/snap-caroulse-style';
 
 import {
@@ -11,10 +13,19 @@ import {
   WeekjobSalary,
   WeekjobApply,
   WeekjobImage,
+  WeekJobDefaultLogo,
+  WeekJobInfo,
+  WeekJobSaveIcon,
+  WeekSalaryBox,
 } from './job-card.styles';
 
-export default function JobCard({ item }) {
-  const { id, title, teaser, salary, location, branding } = item;
+export default function JobCard({ job }) {
+  const [saved, setSaved] = useState(false);
+  const { id, title, teaser, salary, location, branding } = job;
+
+  function handleSaveJob() {
+    setSaved(!saved);
+  }
 
   function handleOpenLink(link) {
     const thisLink = `https://www.seek.co.nz/job/${link}`;
@@ -28,10 +39,12 @@ export default function JobCard({ item }) {
   }
 
   return (
-    <WeekJobCard onPress={() => handleOpenLink(id)} style={styles.slide}>
+    <WeekJobCard style={styles.slide}>
       <>
         <WeekJobBody>
-          {branding !== null && (
+          {branding === null ? (
+            <WeekJobDefaultLogo source={icon} />
+          ) : (
             <WeekjobImage
               resizeMode="contain"
               source={{ uri: branding.logo.url }}
@@ -41,21 +54,25 @@ export default function JobCard({ item }) {
             {title} - {location}
           </WeekJobTitle>
           <WeekJobDescription>{teaser}</WeekJobDescription>
+          {salary.length ? (
+            <WeekjobSalary>Oferta: {salary} </WeekjobSalary>
+          ) : null}
         </WeekJobBody>
-        {salary.length ? (
-          <WeekjobSalary>
-            Salário: {salary} - <WeekjobApply>Ver mais</WeekjobApply>
-          </WeekjobSalary>
-        ) : (
-          <WeekjobApply>Ver mais</WeekjobApply>
-        )}
+        <WeekJobInfo>
+          <WeekSalaryBox>
+            <TouchableHighlight onPress={() => handleOpenLink(id)}>
+              <WeekjobApply>Ver mais</WeekjobApply>
+            </TouchableHighlight>
+          </WeekSalaryBox>
+          <WeekJobSaveIcon onPress={() => handleSaveJob()} saved={saved} />
+        </WeekJobInfo>
       </>
     </WeekJobCard>
   );
 }
 
 JobCard.propTypes = {
-  item: PropTypes.shape({
+  job: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
     teaser: PropTypes.string,
@@ -65,7 +82,7 @@ JobCard.propTypes = {
       id: PropTypes.string,
       logo: PropTypes.shape({
         url: PropTypes.string,
-      }).isRequired,
+      }),
     }),
   }).isRequired,
 };

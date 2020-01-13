@@ -3,11 +3,13 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import Home from './pages/Home';
 import Weather from './pages/Weather';
+import Currency from './pages/Currency';
 
 const StackNavigator = createDrawerNavigator(
   {
     Home,
     Weather,
+    Currency,
   },
   {
     defaultNavigationOptions: {

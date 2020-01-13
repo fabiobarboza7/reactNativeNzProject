@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import SaveIcon from 'react-native-vector-icons/MaterialIcons';
 
 export const WeekJobTitle = styled.Text`
   margin-bottom: 10px;
@@ -7,44 +8,65 @@ export const WeekJobTitle = styled.Text`
 `;
 
 export const WeekJobCard = styled.TouchableHighlight`
-  border-radius: 10px;
   min-height: 150px;
-  background-color: #ed6a5a;
-  justify-content: center;
-  border: 1.5px dotted #ed6a5a;
 `;
 
 export const WeekJobBody = styled.View`
-  min-height: 150px;
-  border-radius: 4px;
-  margin: 5px 10px;
-  padding: 5px 10px;
-  background-color: #fbfff1;
+  min-height: 170px;
+  padding: 10px 10px;
+  background-color: #fff;
   color: #202c39;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 export const WeekjobImage = styled.Image`
   flex: 1;
-  width: auto;
+  width: 100%;
+  margin: 0 auto;
 `;
 
 export const WeekJobDescription = styled.Text.attrs({
-  numberOfLines: 3,
+  numberOfLines: 2,
   ellipsizeMode: 'tail',
 })`
   color: grey;
 `;
 
 export const WeekjobSalary = styled.Text`
-  margin: 5px 10px;
   font-weight: bold;
-  font-size: 15px;
-  color: #f5f7dc;
+  color: #f5b841;
 `;
 
 export const WeekjobApply = styled.Text`
-  margin: 5px 10px;
   font-weight: bold;
-  font-size: 15px;
-  color: #ffff82;
+
+  color: #f5f7dc;
+`;
+
+export const WeekJobDefaultLogo = styled.Image`
+  margin: 0 auto;
+`;
+
+export const WeekJobInfo = styled.View`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px;
+  background-color: #343434;
+`;
+
+export const WeekJobSaveIcon = styled(SaveIcon).attrs(({ saved }) => ({
+  name: saved ? 'favorite' : 'favorite-border',
+  size: 40,
+  color: '#fff',
+}))`
+  color: ${({ saved }) => (saved ? '#F5B841' : '#fff')};
+`;
+
+export const WeekSalaryBox = styled.View`
+  /* flex-direction: row;
+  justify-content: center; */
 `;

@@ -1,63 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
-import PropTypes from 'prop-types';
-import { getWeekJobs } from '../../services/seek.service';
+import { ScrollView } from 'react-native-gesture-handler';
+import { getWeekJobs, searchKeywordJobs } from '../../services/seek.service';
 import JobCard from '../../components/JobCard';
 
 import {
   HomeContainer,
-  CarouselContainer,
   HomeJobsTitle,
-  BoxDivisor,
+  SearchJobTextInput,
 } from './home.styles';
-
-const horizontalMargin = 20;
-const slideWidth = 280;
-const sliderWidth = Dimensions.get('window').width;
-const itemWidth = slideWidth + horizontalMargin * 2;
-
-const renderItem = ({ item }) => {
-  return <JobCard item={item} />;
-};
 
 export default function Home() {
   const [weekJobs, setWeekJobs] = useState([]);
+  const [keywordJob, setKeywordJob] = useState('');
 
   useEffect(() => {
     async function loadWeekJobs() {
       const { data } = await getWeekJobs();
-      console.log(data);
       setWeekJobs(data);
     }
     loadWeekJobs();
   }, []);
 
-  return (
-    <HomeContainer>
-      <BoxDivisor />
+  async function searchJobs(searchKeywordJob) {
+    setKeywordJob(searchKeywordJob);
+    const { data } = await searchKeywordJobs(searchKeywordJob);
+    setWeekJobs(data);
+  }
 
-      <BoxDivisor />
-      <CarouselContainer>
+  return (
+    <>
+      <HomeContainer>
         <HomeJobsTitle>JOBS DA SEMANA</HomeJobsTitle>
-        <Carousel
-          layout="default"
-          data={weekJobs}
-          renderItem={renderItem}
-          sliderWidth={sliderWidth}
-          itemWidth={itemWidth}
+        <SearchJobTextInput
+          value={keywordJob}
+          onChangeText={text => searchJobs(text)}
         />
-      </CarouselContainer>
-      <BoxDivisor />
-    </HomeContainer>
+      </HomeContainer>
+      <ScrollView>
+        {weekJobs.map(job => (
+          <JobCard key={job.id} job={job} />
+        ))}
+      </ScrollView>
+    </>
   );
 }
-
-renderItem.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.number,
-  }).isRequired,
-};
 
 Home.navigationOptions = {
   title: 'Home',

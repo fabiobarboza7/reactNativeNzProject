@@ -1,25 +1,30 @@
-// https://coolors.co/ffff82-f5f7dc-b5d99c-ed6a5a-202c39
+// https://coolors.co/ffff82-f5f7dc-b5d99c-ed6a5a-202c39 F5B841
 import styled from 'styled-components/native';
 
 export const HomeContainer = styled.View`
-  flex: 10;
-  background-color: #202c39;
-`;
-
-export const CarouselContainer = styled.View`
-  padding: 20px 0;
-  background-color: #f5f7dc;
+  background-color: #343434;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
 export const HomeJobsTitle = styled.Text`
-  padding: 10px 0;
+  padding: 30px 0 0 0;
+  font-size: 20px;
   color: #ed6a5a;
   font-weight: bold;
 `;
 
-export const BoxDivisor = styled.View`
-  margin-top: 30px;
+export const SearchJobTextInput = styled.TextInput.attrs({
+  placeholder: '...search for a job title',
+  placeholderTextColor: '#ed6a5a',
+})`
+  height: 40px;
+  padding-left: 10px;
+  border-radius: 4px;
+  width: 80%;
+  /* border: 0.5px solid #ed6a5a; */
+  border-bottom-width: 0.5px;
+  border-bottom-color: #ed6a5a;
+  margin: 50px 0;
 `;

@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { PermissionsAndroid, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import Icon from '../../components/Icon';
-import { WeatherContainer } from './weather.styles';
 import {
+  WeatherContainer,
   StrongText,
   WeatherScrollView,
   WeatherScrollBox,
   WeatherScrollTemp,
   WeatherScrollStatus,
   WeatherText,
-} from '../Home/home.styles';
+} from './weather.styles';
+
 import translatePtBr from '../../util/translate-weather';
 import formatDate from '../../util/formatDate';
 import { getCurrentWeather, getWeather } from '../../services/weather.service';
