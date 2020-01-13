@@ -15,12 +15,17 @@ export const WeekJobCard = styled.TouchableHighlight`
 `;
 
 export const WeekJobBody = styled.View`
-  min-height: 120px;
+  min-height: 150px;
   border-radius: 4px;
   margin: 5px 10px;
   padding: 5px 10px;
   background-color: #fbfff1;
   color: #202c39;
+`;
+
+export const WeekjobImage = styled.Image`
+  flex: 1;
+  width: auto;
 `;
 
 export const WeekJobDescription = styled.Text.attrs({

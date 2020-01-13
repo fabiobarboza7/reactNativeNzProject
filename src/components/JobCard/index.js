@@ -10,10 +10,11 @@ import {
   WeekJobDescription,
   WeekjobSalary,
   WeekjobApply,
+  WeekjobImage,
 } from './job-card.styles';
 
 export default function JobCard({ item }) {
-  const { id, title, teaser, salary, location } = item;
+  const { id, title, teaser, salary, location, branding } = item;
 
   function handleOpenLink(link) {
     const thisLink = `https://www.seek.co.nz/job/${link}`;
@@ -30,6 +31,12 @@ export default function JobCard({ item }) {
     <WeekJobCard onPress={() => handleOpenLink(id)} style={styles.slide}>
       <>
         <WeekJobBody>
+          {branding !== null && (
+            <WeekjobImage
+              resizeMode="contain"
+              source={{ uri: branding.logo.url }}
+            />
+          )}
           <WeekJobTitle>
             {title} - {location}
           </WeekJobTitle>
@@ -54,5 +61,11 @@ JobCard.propTypes = {
     teaser: PropTypes.string,
     salary: PropTypes.string,
     location: PropTypes.string,
+    branding: PropTypes.shape({
+      id: PropTypes.string,
+      logo: PropTypes.shape({
+        url: PropTypes.string,
+      }).isRequired,
+    }),
   }).isRequired,
 };
