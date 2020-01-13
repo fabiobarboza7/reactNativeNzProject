@@ -1,11 +1,13 @@
 import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import Home from './pages/Home';
+import Weather from './pages/Weather';
 
-const StackNavigator = createStackNavigator(
+const StackNavigator = createDrawerNavigator(
   {
     Home,
+    Weather,
   },
   {
     defaultNavigationOptions: {
