@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Linking, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -19,13 +19,8 @@ import {
   WeekSalaryBox,
 } from './job-card.styles';
 
-export default function JobCard({ job }) {
-  const [saved, setSaved] = useState(false);
+export default function JobCard({ job, handleSaveJob, isSaved }) {
   const { id, title, teaser, salary, location, branding } = job;
-
-  function handleSaveJob() {
-    setSaved(!saved);
-  }
 
   function handleOpenLink(link) {
     const thisLink = `https://www.seek.co.nz/job/${link}`;
@@ -64,7 +59,7 @@ export default function JobCard({ job }) {
               <WeekjobApply>Ver mais</WeekjobApply>
             </TouchableHighlight>
           </WeekSalaryBox>
-          <WeekJobSaveIcon onPress={() => handleSaveJob()} saved={saved} />
+          <WeekJobSaveIcon onPress={() => handleSaveJob(job)} saved={isSaved} />
         </WeekJobInfo>
       </>
     </WeekJobCard>
@@ -84,5 +79,8 @@ JobCard.propTypes = {
         url: PropTypes.string,
       }),
     }),
+    isSaved: PropTypes.bool,
   }).isRequired,
+  handleSaveJob: PropTypes.func.isRequired,
+  isSaved: PropTypes.bool.isRequired,
 };
