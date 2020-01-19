@@ -9,6 +9,7 @@ export const HomeContainer = styled.View`
 `;
 
 export const HomeJobsTitle = styled.Text`
+  margin-bottom: 25px;
   padding: 30px 0 0 0;
   font-size: 20px;
   color: #ed6a5a;

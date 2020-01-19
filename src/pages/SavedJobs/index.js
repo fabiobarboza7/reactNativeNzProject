@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, ToastAndroid } from 'react-native';
+import { ScrollView, ToastAndroid, Vibration, Button } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import FavoriteIcon from 'react-native-vector-icons/MaterialIcons';
 import JobCard from '../../components/JobCard';
@@ -31,29 +31,48 @@ export default function SavedJobs() {
       _job => _job.id !== job.id
     );
 
+    Vibration.vibrate(100);
+
     setLocalSavedJobs(updateLocalStorage);
     AsyncStorage.setItem('savedJobs', JSON.stringify([...updateLocalStorage]));
 
     ToastAndroid.showWithGravity(
       'Job removido com sucesso :)',
       ToastAndroid.LONG,
-      ToastAndroid.BOTTOM
+      ToastAndroid.TOP
     );
   }
 
-  return localSavedJobs.length ? (
-    <ScrollView>
-      {localSavedJobs.map(job => {
-        return (
-          <JobCard
-            key={job.id}
-            job={job}
-            removeIcon
-            handleRemoveJobFromCache={handleRemoveJobFromCache}
-          />
-        );
-      })}
-    </ScrollView>
+  function handleRemoveAllJobsFromCache() {
+    setReload(0);
+    AsyncStorage.clear(() => {});
+    ToastAndroid.showWithGravity(
+      'Todos os jobs foram removidos com sucesso :)',
+      ToastAndroid.LONG,
+      ToastAndroid.TOP
+    );
+  }
+
+  return localSavedJobs && localSavedJobs.length ? (
+    <>
+      <ScrollView>
+        {localSavedJobs.map(job => {
+          return (
+            <JobCard
+              key={job.id}
+              job={job}
+              removeIcon
+              handleRemoveJobFromCache={handleRemoveJobFromCache}
+            />
+          );
+        })}
+      </ScrollView>
+      <Button
+        color="#ed6a5a"
+        onPress={() => handleRemoveAllJobsFromCache()}
+        title="DELETAR TODOS JOBS SALVOS"
+      />
+    </>
   ) : (
     <NoLocalSavedJobsContainer>
       <NoLocalSavedJobsInfo>NÃO HÁ JOBS SALVOS</NoLocalSavedJobsInfo>

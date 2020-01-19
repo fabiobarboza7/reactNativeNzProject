@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Button } from 'react-native';
+import { ScrollView, Button, Vibration } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeIcon from 'react-native-vector-icons/FontAwesome';
 import { getWeekJobs, searchKeywordJobs } from '../../services/seek.service';
@@ -8,12 +8,12 @@ import JobCard from '../../components/JobCard';
 import {
   HomeContainer,
   HomeJobsTitle,
-  SearchJobTextInput,
+  // SearchJobTextInput,
 } from './home.styles';
 
 export default function Home() {
   const [weekJobs, setWeekJobs] = useState([]);
-  const [keywordJob, setKeywordJob] = useState('');
+  // const [keywordJob, setKeywordJob] = useState('');
   const [jobs, setJobs] = useState([]);
   const [favoriteJobs, setFavoriteJobs] = useState([]);
   const [localStorage, setLocalStorage] = useState([]);
@@ -42,7 +42,7 @@ export default function Home() {
     job.isFavorite = !job.isFavorite;
     setFavoriteJobs([...favoriteJobs, job]);
     setWeekJobs([...weekJobs]);
-
+    Vibration.vibrate(100);
     updateLocalStorage(job);
   }
 
@@ -66,7 +66,6 @@ export default function Home() {
   useEffect(() => {
     async function getCorrectJobsData() {
       if (localStorage && localStorage.length) {
-        // console.log(localStorage, 'localStorage');
         weekJobs.map(data => {
           return localStorage.map(_local => {
             if (_local.id === data.id) {
@@ -82,21 +81,22 @@ export default function Home() {
     getCorrectJobsData();
   }, [localStorage, weekJobs]);
 
-  async function searchJobs(searchKeywordJob) {
-    setKeywordJob(searchKeywordJob);
-    const { data } = await searchKeywordJobs(searchKeywordJob);
-    setWeekJobs(data);
-  }
+  // function searchJobs(searchKeywordJob) {
+  //   setKeywordJob(searchKeywordJob);
+  //   const queryData = weekJobs.filter(job =>
+  //     job.title.startsWith(searchKeywordJob)
+  //   );
+  //   setWeekJobs(queryData);
+  // }
 
   return (
     <>
       <HomeContainer>
         <HomeJobsTitle>JOBS DA SEMANA</HomeJobsTitle>
-        {/* <Button title="reset" onPress={() => handleResetLocalStorage()} /> */}
-        <SearchJobTextInput
+        {/* <SearchJobTextInput
           value={keywordJob}
           onChangeText={text => searchJobs(text)}
-        />
+        /> */}
       </HomeContainer>
       <ScrollView>
         {jobs &&
