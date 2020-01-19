@@ -58,15 +58,18 @@ export const WeekJobInfo = styled.View`
   background-color: #343434;
 `;
 
-export const WeekJobSaveIcon = styled(SaveIcon).attrs(({ saved }) => ({
-  name: saved ? 'favorite' : 'favorite-border',
+export const WeekJobSaveIcon = styled(SaveIcon).attrs(({ isFavorite }) => ({
+  name: isFavorite ? 'favorite' : 'favorite-border',
   size: 40,
-  color: '#fff',
 }))`
-  color: ${({ saved }) => (saved ? '#F5B841' : '#fff')};
+  color: ${({ isFavorite }) => (isFavorite ? '#F5B841' : '#fff')};
 `;
 
-export const WeekSalaryBox = styled.View`
-  /* flex-direction: row;
-  justify-content: center; */
+export const WeekJobRemoveLocal = styled(SaveIcon).attrs(() => ({
+  name: 'delete-forever',
+  size: 40,
+}))`
+  color: #ed6a5a;
 `;
+
+export const WeekSalaryBox = styled.View``;

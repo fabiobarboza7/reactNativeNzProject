@@ -13,36 +13,73 @@ import {
 export default function Home() {
   const [weekJobs, setWeekJobs] = useState([]);
   const [keywordJob, setKeywordJob] = useState('');
-  const [myJobs, setMyJobs] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [favoriteJobs, setFavoriteJobs] = useState([]);
   const [localStorage, setLocalStorage] = useState([]);
 
-  function handleSaveJob(job) {
-    const duplicatedJob = myJobs.find(_job => _job.id === job.id);
+  async function updateLocalStorage(job) {
+    const data = await AsyncStorage.getItem('savedJobs');
+    const localStorageParsed = JSON.parse(data);
+    if (localStorageParsed && localStorageParsed.length) {
+      const duplicatedData = localStorageParsed.find(
+        _local => _local.id === job.id
+      );
 
-    if (!duplicatedJob) {
-      job.isSaved = false;
-      setMyJobs([...myJobs, job]);
-      AsyncStorage.setItem('savedJobs', JSON.stringify([...myJobs]));
-    } else {
-      duplicatedJob.isSaved = true;
-      AsyncStorage.setItem('savedJobs', JSON.stringify([...myJobs]));
+      if (!duplicatedData) {
+        return AsyncStorage.setItem(
+          'savedJobs',
+          JSON.stringify([...favoriteJobs])
+        );
+      }
+      return false;
     }
+
+    return AsyncStorage.setItem('savedJobs', JSON.stringify([...favoriteJobs]));
+  }
+
+  function handleSaveJob(job) {
+    job.isFavorite = !job.isFavorite;
+    setFavoriteJobs([...favoriteJobs, job]);
+    setWeekJobs([...weekJobs]);
+
+    updateLocalStorage(job);
   }
 
   useEffect(() => {
     async function loadLocalStorage() {
       const data = await AsyncStorage.getItem('savedJobs');
-      setLocalStorage([JSON.parse(data)]);
+      setLocalStorage(JSON.parse(data));
     }
+
     loadLocalStorage();
 
     async function loadWeekJobs() {
       const { data } = await getWeekJobs();
-
-      setWeekJobs(data);
+      const newData = data.map(job => ({ ...job, isFavorite: false }));
+      setWeekJobs(newData);
     }
+
     loadWeekJobs();
   }, []);
+
+  useEffect(() => {
+    async function getCorrectJobsData() {
+      if (localStorage && localStorage.length) {
+        // console.log(localStorage, 'localStorage');
+        weekJobs.map(data => {
+          return localStorage.map(_local => {
+            if (_local.id === data.id) {
+              data.isFavorite = true;
+            }
+            return data;
+          });
+        });
+      }
+      setJobs(weekJobs);
+    }
+
+    getCorrectJobsData();
+  }, [localStorage, weekJobs]);
 
   async function searchJobs(searchKeywordJob) {
     setKeywordJob(searchKeywordJob);
@@ -50,32 +87,27 @@ export default function Home() {
     setWeekJobs(data);
   }
 
-  function handleResetLocalStorage() {
-    AsyncStorage.clear(success => console.log(success));
-  }
-
   return (
     <>
       <HomeContainer>
         <HomeJobsTitle>JOBS DA SEMANA</HomeJobsTitle>
-        <Button title="reset" onPress={() => handleResetLocalStorage()} />
+        {/* <Button title="reset" onPress={() => handleResetLocalStorage()} /> */}
         <SearchJobTextInput
           value={keywordJob}
           onChangeText={text => searchJobs(text)}
         />
       </HomeContainer>
       <ScrollView>
-        {console.log(localStorage)}
-        {weekJobs.map(job => {
-          return (
-            <JobCard
-              key={job.id}
-              job={job}
-              handleSaveJob={() => handleSaveJob({ ...job, isSaved: true })}
-              isSaved
-            />
-          );
-        })}
+        {jobs &&
+          jobs.map(job => {
+            return (
+              <JobCard
+                key={job.id}
+                job={job}
+                handleSaveJob={() => handleSaveJob(job)}
+              />
+            );
+          })}
       </ScrollView>
     </>
   );

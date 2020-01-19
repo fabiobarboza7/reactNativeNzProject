@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Linking, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -16,12 +16,17 @@ import {
   WeekJobDefaultLogo,
   WeekJobInfo,
   WeekJobSaveIcon,
+  WeekJobRemoveLocal,
   WeekSalaryBox,
 } from './job-card.styles';
 
-export default function JobCard({ job, handleSaveJob, isSaved }) {
-  const { id, title, teaser, salary, location, branding } = job;
-
+export default function JobCard({
+  job,
+  handleSaveJob,
+  handleRemoveJobFromCache,
+  removeIcon,
+}) {
+  const { id, title, teaser, salary, location, branding, isFavorite } = job;
   function handleOpenLink(link) {
     const thisLink = `https://www.seek.co.nz/job/${link}`;
     Linking.canOpenURL(thisLink).then(supported => {
@@ -59,12 +64,25 @@ export default function JobCard({ job, handleSaveJob, isSaved }) {
               <WeekjobApply>Ver mais</WeekjobApply>
             </TouchableHighlight>
           </WeekSalaryBox>
-          <WeekJobSaveIcon onPress={() => handleSaveJob(job)} saved={isSaved} />
+          {removeIcon ? (
+            <WeekJobRemoveLocal onPress={() => handleRemoveJobFromCache(job)} />
+          ) : (
+            <WeekJobSaveIcon
+              onPress={() => handleSaveJob(job)}
+              isFavorite={isFavorite}
+            />
+          )}
         </WeekJobInfo>
       </>
     </WeekJobCard>
   );
 }
+
+JobCard.defaultProps = {
+  handleRemoveJobFromCache: () => {},
+  handleSaveJob: () => {},
+  removeIcon: false,
+};
 
 JobCard.propTypes = {
   job: PropTypes.shape({
@@ -79,8 +97,9 @@ JobCard.propTypes = {
         url: PropTypes.string,
       }),
     }),
-    isSaved: PropTypes.bool,
+    isFavorite: PropTypes.bool,
   }).isRequired,
-  handleSaveJob: PropTypes.func.isRequired,
-  isSaved: PropTypes.bool.isRequired,
+  handleSaveJob: PropTypes.func,
+  handleRemoveJobFromCache: PropTypes.func,
+  removeIcon: PropTypes.bool,
 };

@@ -1,43 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { Button, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import JobCard from '../../components/JobCard';
 
 // import { Container } from './styles';
 
 export default function SavedJobs() {
-  const [savedJobs, setSavedJobs] = useState([]);
+  const [localSavedJobs, setLocalSavedJobs] = useState([]);
 
   useEffect(() => {
     async function getSavedJobs() {
-      const jobs = await AsyncStorage.getItem('savedJobs');
-
-      if (jobs) {
-        setSavedJobs(jobs);
-      }
+      const data = await AsyncStorage.getItem('savedJobs');
+      setLocalSavedJobs(JSON.parse(data));
     }
 
     getSavedJobs();
-  }, [savedJobs]);
+  }, []);
 
-  function Item(item) {
-    return (
-      <View>
-        <Text>{JSON.stringify(item)}</Text>
-      </View>
+  function handleRemoveJobFromCache(job) {
+    const updateLocalStorage = localSavedJobs.filter(
+      _job => _job.id !== job.id
     );
+
+    AsyncStorage.setItem('savedJobs', JSON.stringify([...updateLocalStorage]));
   }
 
   return (
-    savedJobs && (
-      <View style={{ flex: 1 }}>
-        <Text>Hi</Text>
-        <FlatList
-          data={savedJobs}
-          renderItem={({ item }) => <Item title={item.title} />}
-          keyExtractor={item => item.id}
-        />
-      </View>
-    )
+    <>
+      <ScrollView>
+        {localSavedJobs &&
+          localSavedJobs.map(job => {
+            return (
+              <JobCard
+                key={job.id}
+                job={job}
+                removeIcon
+                handleRemoveJobFromCache={handleRemoveJobFromCache}
+              />
+            );
+          })}
+      </ScrollView>
+    </>
   );
 }
 

@@ -19,6 +19,7 @@ export const SearchJobTextInput = styled.TextInput.attrs({
   placeholder: '...search for a job title',
   placeholderTextColor: '#ed6a5a',
 })`
+  color: #fff;
   height: 40px;
   padding-left: 10px;
   border-radius: 4px;
