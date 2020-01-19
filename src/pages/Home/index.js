@@ -13,25 +13,24 @@ import {
 
 export default function Home() {
   const [weekJobs, setWeekJobs] = useState([]);
-  // const [keywordJob, setKeywordJob] = useState('');
   const [jobs, setJobs] = useState([]);
   const [favoriteJobs, setFavoriteJobs] = useState([]);
   const [localStorage, setLocalStorage] = useState([]);
 
   async function updateLocalStorage(job) {
-    const data = await AsyncStorage.getItem('savedJobs');
-    const localStorageParsed = JSON.parse(data);
-    if (localStorageParsed && localStorageParsed.length) {
-      const duplicatedData = localStorageParsed.find(
-        _local => _local.id === job.id
-      );
-
+    console.log('job: ', job);
+    // const data = await AsyncStorage.getItem('savedJobs');
+    // const localStorageParsed = JSON.parse(data);
+    if (localStorage && localStorage.length) {
+      const duplicatedData = localStorage.find(_local => _local.id === job.id);
       if (!duplicatedData) {
+        console.log('Duplicated: ', duplicatedData);
         return AsyncStorage.setItem(
           'savedJobs',
           JSON.stringify([...favoriteJobs])
         );
       }
+      console.log('Not duplicated');
       return false;
     }
 
@@ -40,10 +39,20 @@ export default function Home() {
 
   function handleSaveJob(job) {
     job.isFavorite = !job.isFavorite;
-    setFavoriteJobs([...favoriteJobs, job]);
-    setWeekJobs([...weekJobs]);
+    const duplicatedData = favoriteJobs.find(
+      _favorite => _favorite.id === job.id
+    );
+
+    if (!duplicatedData) {
+      setFavoriteJobs([...favoriteJobs, job]);
+      // setWeekJobs([...weekJobs]);
+      updateLocalStorage(job);
+    } else {
+      setFavoriteJobs([...favoriteJobs]);
+      updateLocalStorage(job);
+    }
+
     Vibration.vibrate(100);
-    updateLocalStorage(job);
   }
 
   useEffect(() => {
@@ -64,6 +73,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    console.log(`LocalStorage: `, localStorage);
     async function getCorrectJobsData() {
       if (localStorage && localStorage.length) {
         weekJobs.map(data => {
