@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
+import ExchangeIcon from 'react-native-vector-icons/FontAwesome';
 import { conversion } from '../../services/currency.service';
 import {
   LabelText,
@@ -73,3 +74,8 @@ export default function Currency() {
     </View>
   );
 }
+
+Currency.navigationOptions = {
+  drawerIcon: () => <ExchangeIcon color="#ffff82" size={25} name="exchange" />,
+  title: 'Currency',
+};

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PermissionsAndroid, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import WeatherIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from '../../components/Icon';
 import {
   WeatherContainer,
@@ -110,9 +111,8 @@ export default function Weather() {
 }
 
 Weather.navigationOptions = {
+  drawerIcon: () => (
+    <WeatherIcon color="#b5d99c" size={25} name="weather-partlycloudy" />
+  ),
   title: 'Weather Info',
-  headerStyle: {
-    backgroundColor: '#ED6A5A',
-  },
-  headerTintColor: '#F5F7DC',
 };

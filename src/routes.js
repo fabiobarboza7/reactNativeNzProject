@@ -14,13 +14,10 @@ const StackNavigator = createDrawerNavigator(
     SavedJobs,
   },
   {
-    defaultNavigationOptions: {
-      headerTitleAlign: 'center',
-      headerBackTitleVisible: false,
-      headerStyle: {
-        backgroundColor: '#112',
-      },
-      headerTintColor: '#fff',
+    drawerBackgroundColor: '#202c39',
+    contentOptions: {
+      activeTintColor: '#ed6a5a',
+      inactiveTintColor: '#f5f7dc',
     },
   }
 );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import HomeIcon from 'react-native-vector-icons/FontAwesome';
 import { getWeekJobs, searchKeywordJobs } from '../../services/seek.service';
 import JobCard from '../../components/JobCard';
 
@@ -114,9 +115,6 @@ export default function Home() {
 }
 
 Home.navigationOptions = {
+  drawerIcon: () => <HomeIcon color="#f5f7dc" size={25} name="home" />,
   title: 'Home',
-  headerStyle: {
-    backgroundColor: '#ED6A5A',
-  },
-  headerTintColor: '#F5F7DC',
 };
