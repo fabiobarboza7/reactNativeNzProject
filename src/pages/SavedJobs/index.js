@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, ToastAndroid, Vibration, Button } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import FavoriteIcon from 'react-native-vector-icons/MaterialIcons';
@@ -8,34 +8,23 @@ import {
   NoLocalSavedJobsContainer,
   NoLocalSavedJobsInfo,
 } from './saved-jobs.styles';
+import { Store } from '../../store';
+import { removeJob } from '../../store/modules/jobs/actions';
 
 export default function SavedJobs() {
-  const [loading, setLoading] = useState(false);
-  const [reload, setReload] = useState(0);
-  const [localSavedJobs, setLocalSavedJobs] = useState([]);
+  const [state, dispatch] = useContext(Store);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    async function getSavedJobs() {
-      const data = await AsyncStorage.getItem('savedJobs');
-      setLocalSavedJobs(JSON.parse(data));
-      setLoading(true);
-    }
-    setInterval(() => {
-      setReload(1);
-    }, 1000);
-    getSavedJobs();
-  }, [localSavedJobs, reload]);
+    setJobs(...state.jobs);
+  }, [jobs, state, state.jobs]);
 
-  function handleRemoveJobFromCache(job) {
-    const updateLocalStorage = localSavedJobs.filter(
-      _job => _job.id !== job.id
-    );
+  function handleRemoveJobState(job) {
+    dispatch(removeJob({ id: job.id }));
 
     Vibration.vibrate(100);
-
-    setLocalSavedJobs(updateLocalStorage);
-    AsyncStorage.setItem('savedJobs', JSON.stringify([...updateLocalStorage]));
-
+    // setLocalSavedJobs(updateState);
+    // AsyncStorage.setItem('savedJobs', JSON.stringify([...updateState]));
     ToastAndroid.showWithGravity(
       'Job removido com sucesso :)',
       ToastAndroid.LONG,
@@ -44,7 +33,6 @@ export default function SavedJobs() {
   }
 
   function handleRemoveAllJobsFromCache() {
-    setReload(0);
     AsyncStorage.clear(() => {});
     ToastAndroid.showWithGravity(
       'Todos os jobs foram removidos com sucesso :)',
@@ -53,16 +41,16 @@ export default function SavedJobs() {
     );
   }
 
-  return localSavedJobs && localSavedJobs.length ? (
+  return jobs && jobs.length ? (
     <>
       <ScrollView>
-        {localSavedJobs.map(job => {
+        {jobs.map(job => {
           return (
             <JobCard
               key={job.id}
               job={job}
               removeIcon
-              handleRemoveJobFromCache={handleRemoveJobFromCache}
+              handleRemoveJobState={handleRemoveJobState}
             />
           );
         })}

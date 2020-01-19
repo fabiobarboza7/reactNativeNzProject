@@ -23,7 +23,7 @@ import {
 export default function JobCard({
   job,
   handleSaveJob,
-  handleRemoveJobFromCache,
+  handleRemoveJobState,
   removeIcon,
 }) {
   const { id, title, teaser, salary, location, branding, isFavorite } = job;
@@ -65,7 +65,7 @@ export default function JobCard({
             </TouchableHighlight>
           </WeekSalaryBox>
           {removeIcon ? (
-            <WeekJobRemoveLocal onPress={() => handleRemoveJobFromCache(job)} />
+            <WeekJobRemoveLocal onPress={() => handleRemoveJobState(job)} />
           ) : (
             <WeekJobSaveIcon
               onPress={() => handleSaveJob(job)}
@@ -79,7 +79,7 @@ export default function JobCard({
 }
 
 JobCard.defaultProps = {
-  handleRemoveJobFromCache: () => {},
+  handleRemoveJobState: () => {},
   handleSaveJob: () => {},
   removeIcon: false,
 };
@@ -100,6 +100,6 @@ JobCard.propTypes = {
     isFavorite: PropTypes.bool,
   }).isRequired,
   handleSaveJob: PropTypes.func,
-  handleRemoveJobFromCache: PropTypes.func,
+  handleRemoveJobState: PropTypes.func,
   removeIcon: PropTypes.bool,
 };

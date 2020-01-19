@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { ScrollView, Button, Vibration } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -10,103 +10,81 @@ import {
   HomeJobsTitle,
   // SearchJobTextInput,
 } from './home.styles';
+import { Store } from '../../store';
+import { jobsStatus } from '../../store/modules/jobs/actions';
 
 export default function Home() {
+  const [state, dispatch] = useContext(Store);
   const [weekJobs, setWeekJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
-  const [favoriteJobs, setFavoriteJobs] = useState([]);
   const [localStorage, setLocalStorage] = useState([]);
-
-  async function updateLocalStorage(job) {
-    console.log('job: ', job);
-    // const data = await AsyncStorage.getItem('savedJobs');
-    // const localStorageParsed = JSON.parse(data);
-    if (localStorage && localStorage.length) {
-      const duplicatedData = localStorage.find(_local => _local.id === job.id);
-      if (!duplicatedData) {
-        console.log('Duplicated: ', duplicatedData);
-        return AsyncStorage.setItem(
-          'savedJobs',
-          JSON.stringify([...favoriteJobs])
-        );
-      }
-      console.log('Not duplicated');
-      return false;
-    }
-
-    return AsyncStorage.setItem('savedJobs', JSON.stringify([...favoriteJobs]));
-  }
-
-  function handleSaveJob(job) {
-    job.isFavorite = !job.isFavorite;
-    const duplicatedData = favoriteJobs.find(
-      _favorite => _favorite.id === job.id
-    );
-
-    if (!duplicatedData) {
-      setFavoriteJobs([...favoriteJobs, job]);
-      // setWeekJobs([...weekJobs]);
-      updateLocalStorage(job);
-    } else {
-      setFavoriteJobs([...favoriteJobs]);
-      updateLocalStorage(job);
-    }
-
-    Vibration.vibrate(100);
-  }
-
+  const [favoriteJobs, setFavoriteJobs] = useState([]);
+  // get weekJobs from API
   useEffect(() => {
-    async function loadLocalStorage() {
-      const data = await AsyncStorage.getItem('savedJobs');
-      setLocalStorage(JSON.parse(data));
-    }
-
-    loadLocalStorage();
-
-    async function loadWeekJobs() {
+    async function getWeekJobsService() {
       const { data } = await getWeekJobs();
       const newData = data.map(job => ({ ...job, isFavorite: false }));
       setWeekJobs(newData);
     }
 
-    loadWeekJobs();
+    getWeekJobsService();
   }, []);
 
+  // get localStorage from device
   useEffect(() => {
-    console.log(`LocalStorage: `, localStorage);
-    async function getCorrectJobsData() {
-      if (localStorage && localStorage.length) {
-        weekJobs.map(data => {
-          return localStorage.map(_local => {
-            if (_local.id === data.id) {
-              data.isFavorite = true;
-            }
-            return data;
-          });
-        });
-      }
-      setJobs(weekJobs);
+    async function getLocalStorageData() {
+      const data = await AsyncStorage.getItem('savedJobs');
+      setLocalStorage(JSON.parse(data));
     }
 
-    getCorrectJobsData();
-  }, [localStorage, weekJobs]);
+    getLocalStorageData();
+  }, []);
 
-  // function searchJobs(searchKeywordJob) {
-  //   setKeywordJob(searchKeywordJob);
-  //   const queryData = weekJobs.filter(job =>
-  //     job.title.startsWith(searchKeywordJob)
-  //   );
-  //   setWeekJobs(queryData);
-  // }
+  function handleSaveJob(job) {
+    job.isFavorite = !job.isFavorite;
+    if (job.isFavorite) {
+      const duplicated = favoriteJobs.find(
+        _favorite => _favorite.id === job.id
+      );
+      if (!duplicated) {
+        setFavoriteJobs([...favoriteJobs, job]);
+      }
+    } else {
+      const removeFavorite = favoriteJobs.filter(
+        _favorite => _favorite.id !== job.id
+      );
+      setFavoriteJobs([...removeFavorite]);
+    }
+
+    Vibration.vibrate(100);
+  }
+
+  // update the view based on favoriteJobs
+  useEffect(() => {
+    async function getJobsData() {
+      const jobsData = weekJobs.filter(week => {
+        return favoriteJobs.map(_favorite => {
+          if (_favorite.id === week.id) {
+            week.isFavorite = true;
+          }
+          return week;
+        });
+      });
+
+      setJobs(jobsData);
+    }
+
+    getJobsData();
+  }, [favoriteJobs, weekJobs]);
+
+  useEffect(() => {
+    dispatch(jobsStatus({ jobs: favoriteJobs }));
+  }, [dispatch, favoriteJobs]);
 
   return (
     <>
       <HomeContainer>
         <HomeJobsTitle>JOBS DA SEMANA</HomeJobsTitle>
-        {/* <SearchJobTextInput
-          value={keywordJob}
-          onChangeText={text => searchJobs(text)}
-        /> */}
       </HomeContainer>
       <ScrollView>
         {jobs &&
